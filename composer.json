@@ -1,0 +1,16 @@
+{
+    "name": "origindesign/helper",
+    "description": "Helper - Custom Drupal 8 Module - A set of handy functions for Drupal development and theming",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Lindsay Wilson",
+            "email": "lwilson@origindesign.ca"
+        }
+    ],
+    "type": "drupal-module",
+    "require": {
+		"php": ">=5.6"
+    },
+	"minimum-stability": "dev"
+}

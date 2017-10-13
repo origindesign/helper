@@ -1,0 +1,31 @@
+services:
+    # A service that contain helper function for rendering elements
+    helper.twig.image_helper:
+        class: Drupal\helper\Twig\ImageHelper
+        arguments: ['@renderer']
+        tags:
+          - { name: twig.extension }
+    helper.twig.string_helper:
+        class: Drupal\helper\Twig\StringHelper
+        arguments: ['@renderer']
+        tags:
+          - { name: twig.extension }
+    helper.image_field_helper:
+        class: Drupal\helper\ImageFieldHelper
+        arguments: ['@image.factory', '@renderer']
+    helper.date_field_helper:
+        class: Drupal\helper\DateFieldHelper
+        arguments: ['@renderer']
+    helper.render_helper:
+        class: Drupal\helper\RenderHelper
+    helper.node_helper:
+        class: Drupal\helper\NodeHelper
+        arguments: ['@entity_type.manager', '@entity_field.manager']
+    helper.taxo_helper:
+        class: Drupal\helper\TaxoHelper
+        arguments: ['@entity_type.manager', '@path.alias_manager']
+    helper.path_helper:
+        class: Drupal\helper\PathHelper
+        arguments: ['@path.current', '@path.alias_manager', '@path.alias_storage']
+    helper.global_helper:
+        class: Drupal\helper\GlobalHelper
