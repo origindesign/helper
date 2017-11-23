@@ -32,11 +32,6 @@ class StringHelper extends \Twig_Extension {
     public function getFunctions() {
         return array(
             new \Twig_SimpleFunction(
-                'displayFromToDates',
-                array($this, 'displayFromToDates'),
-                array('is_safe' => array('html') )
-            ),
-            new \Twig_SimpleFunction(
                 'uniqueString',
                 array($this, 'uniqueString'),
                 array('is_safe' => array('html') )
@@ -50,7 +45,34 @@ class StringHelper extends \Twig_Extension {
                 'getTermIdFromURL',
                 array($this, 'getTermIdFromURL'),
                 array('is_safe' => array('html') )
+            ),
+            new \Twig_SimpleFunction(
+                'termsToClasses',
+                array($this, 'termsToClasses'),
+                array('is_safe' => array('html') )
+            ),
+            new \Twig_SimpleFunction(
+                'displayFromToDates',
+                array($this, 'displayFromToDates'),
+                array('is_safe' => array('html') )
+            ),
+            new \Twig_SimpleFunction(
+                'displayFromToTime',
+                array($this, 'displayFromToTime'),
+                array('is_safe' => array('html') )
+            ),
+            new \Twig_SimpleFunction(
+                'fieldToTime',
+                array($this, 'fieldToTime'),
+                array('is_safe' => array('html') )
+            ),
+            new \Twig_SimpleFunction(
+                'isTitleLong',
+                array($this, 'isTitleLong'),
+                array('is_safe' => array('html') )
             )
+
+
         );
     }
 
@@ -72,69 +94,9 @@ class StringHelper extends \Twig_Extension {
     {
         $value = str_replace('&amp; ','',$string);
         $value = str_replace(' ','-', strtolower($value));
-		$value = preg_replace('@[^a-z0-9-]+@','', $value);
+        $value = preg_replace('@[^a-z0-9-]+@','', $value);
         return $value;
     }
-
-
-    /**
-     * @param $from int datetime
-     * @param $to int datetime
-     * @param string $d day formatter
-     * @param string $m month formatter
-     * @return string return dates in a from to format
-     */
-    public function displayFromToDates ($from, $to, $d = 'j', $m = 'M' ){
-
-        $fromDate = new DrupalDateTime( $from );
-
-        // If there is a to date
-        if ($to){
-
-            $toDate = new DrupalDateTime( $to );
-
-            // Return from date only if days are the same
-            if ( $fromDate->format("Y-m-d") == $toDate->format("Y-m-d") ){
-                return '<span class="date">
-                            <span class="month">'.$fromDate->format($m).'</span>
-                            <span class="day">'.$fromDate->format($d).'</span>
-                        </span>';
-            }else{
-
-                // If month are the same
-                if ( $fromDate->format("Y-m") == $toDate->format("Y-m") ){
-
-                    return '<span class="date">
-                                <span class="month">'.$fromDate->format($m).'</span>
-                                <span class="day">'.$fromDate->format($d).'</span>
-                                -
-                                <span class="day">'.$toDate->format($d).'</span>
-                            </span>';
-
-                }else{
-
-                // If months are different
-                    return '<span class="date">
-                                <span class="month">'.$fromDate->format($m).'</span>
-                                <span class="day">'.$fromDate->format($d).'</span>
-                            </span>
-                            <span class="to">-</span>
-                            <span class="date">
-                                <span class="month">'.$toDate->format($m).'</span>
-                                <span class="day">'.$toDate->format($d).'</span>
-                            </span>';
-                }
-            }
-
-        }
-
-        return '<span class="date">
-                    <span class="month">'.$fromDate->format($m).'</span>
-                    <span class="day">'.$fromDate->format($d).'</span>
-                </span>';
-
-    }
-
 
 
     function obfuscateEmail($string)
@@ -193,6 +155,64 @@ Rot13={map:null,convert:function(e){Rot13.init();var t="";for(i=0;i<e.length;i++
     }
 
 
+    /**
+     * @param $from int datetime
+     * @param $to int datetime
+     * @param string $d day formatter
+     * @param string $m month formatter
+     * @return string return dates in a from to format
+     */
+    public function displayFromToDates ($from, $to, $d = 'j', $m = 'M' ){
+
+        $fromDate = new DrupalDateTime( $from );
+
+        // If there is a to date
+        if ($to){
+
+            $toDate = new DrupalDateTime( $to );
+
+            // Return from date only if days are the same
+            if ( $fromDate->format("Y-m-d") == $toDate->format("Y-m-d") ){
+                return '<span class="date">
+                            <span class="month">'.$fromDate->format($m).'</span>
+                            <span class="day">'.$fromDate->format($d).'</span>
+                        </span>';
+            }else{
+
+                // If month are the same
+                if ( $fromDate->format("Y-m") == $toDate->format("Y-m") ){
+
+                    return '<span class="date">
+                                <span class="month">'.$fromDate->format($m).'</span>
+                                <span class="day">'.$fromDate->format($d).'</span>
+                                -
+                                <span class="day">'.$toDate->format($d).'</span>
+                            </span>';
+
+                }else{
+
+                    // If months are different
+                    return '<span class="date">
+                                <span class="month">'.$fromDate->format($m).'</span>
+                                <span class="day">'.$fromDate->format($d).'</span>
+                            </span>
+                            <span class="to">-</span>
+                            <span class="date">
+                                <span class="month">'.$toDate->format($m).'</span>
+                                <span class="day">'.$toDate->format($d).'</span>
+                            </span>';
+                }
+            }
+
+        }
+
+        return '<span class="date">
+                    <span class="month">'.$fromDate->format($m).'</span>
+                    <span class="day">'.$fromDate->format($d).'</span>
+                </span>';
+
+    }
+
 
     /**
      * @param string $string
@@ -200,7 +220,8 @@ Rot13={map:null,convert:function(e){Rot13.init();var t="";for(i=0;i<e.length;i++
      */
     public function uniqueString ($string ){
 
-        $cleanStr = str_replace(" ", "", $string);
+        $cleanStr = $this->machineFilter($string);
+        $cleanStr = substr($cleanStr, 0,25);
         //$arrStr = str_split($cleanStr, );
 
         return $cleanStr;
@@ -242,6 +263,104 @@ Rot13={map:null,convert:function(e){Rot13.init();var t="";for(i=0;i<e.length;i++
         $termUrlArr = explode('/',$termUrl);
         return end($termUrlArr);
     }
+
+
+
+
+    /**
+     * Transform a Term Reference field into a string of classes
+     * @param $field_terms
+     * @return array
+     */
+    public function termsToClasses ( $field_terms ){
+
+        $classes = array();
+
+        foreach ( $field_terms as $term){
+            $classes[] = $this->machineFilter('term-'.$term["#plain_text"]);
+        }
+
+        return $classes;
+
+    }
+
+
+
+
+    public function fieldToTime ( $field_date ){
+
+        $formatDate = '';
+
+        //return $field_date.0[start_date)
+
+
+        if ( isset($field_date['start_date']) ){
+            $startTime = new DrupalDateTime($field_date['start_date']['#attributes']['datetime']);
+            $startTime->setTimezone(new \DateTimeZone('America/New_York'));
+            $formatDate = $startTime->format("g:ia");
+        }
+
+        if ( isset($field_date['end_date']) ){
+            $endTime = new DrupalDateTime($field_date['end_date']['#attributes']['datetime']);
+            $endTime->setTimezone(new \DateTimeZone('America/New_York'));
+            if ( $endTime->format("g:ia") !== $startTime->format("g:ia")){
+                $formatDate .= " to ". $endTime->format("g:ia");
+            }
+        }
+
+        return $formatDate;
+
+
+
+    }
+
+
+
+    /**
+     * @param $from int datetime
+     * @param $to int datetime
+     * @return string return time in a from to format
+     */
+    public function displayFromToTime ($from, $to ){
+
+        $fromDate = DrupalDateTime::createFromTimestamp( (int)$from );
+
+        // If there is a to date
+        if ($to){
+
+            $toDate = DrupalDateTime::createFromTimestamp( (int)$to );
+
+            return $fromDate->format("g:ia")." to ".$toDate->format("g:ia");
+
+        }
+
+        return $fromDate->format("g:ia");
+
+    }
+
+
+
+    /**
+     * @param $string
+     * @return bool
+     */
+    public function isTitleLong($string ){
+
+        $maxChar = 8;
+        $isTooLong = false;
+        $titleArr = explode(" ", $string);
+        foreach ( $titleArr as $part ){
+            $lengthPart = strlen($part);
+            if($lengthPart > $maxChar){
+                $isTooLong = true;
+            }
+        }
+
+        return $isTooLong;
+
+    }
+
+
 
 
 }
