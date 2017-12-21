@@ -323,14 +323,18 @@ Rot13={map:null,convert:function(e){Rot13.init();var t="";for(i=0;i<e.length;i++
      */
     public function displayFromToTime ($from, $to ){
 
-        $fromDate = DrupalDateTime::createFromTimestamp( (int)$from );
+        $fromDate = new DrupalDateTime( $from );
+        //$fromDate = DrupalDateTime::createFromTimestamp( (int)$from );
 
         // If there is a to date
         if ($to){
 
-            $toDate = DrupalDateTime::createFromTimestamp( (int)$to );
+            $toDate = new DrupalDateTime( $to );
+            //$toDate = DrupalDateTime::createFromTimestamp( (int)$to );
 
-            return $fromDate->format("g:ia")." to ".$toDate->format("g:ia");
+            if($fromDate != $toDate){
+                return $fromDate->format("g:ia")." to ".$toDate->format("g:ia");
+            }
 
         }
 
