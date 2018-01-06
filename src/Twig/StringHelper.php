@@ -156,13 +156,14 @@ Rot13={map:null,convert:function(e){Rot13.init();var t="";for(i=0;i<e.length;i++
 
 
     /**
-     * @param $from int datetime
-     * @param $to int datetime
-     * @param string $d day formatter
-     * @param string $m month formatter
-     * @return string return dates in a from to format
+     * @param $from
+     * @param $to
+     * @param string $d
+     * @param string $m
+     * @param string $order
+     * @return string
      */
-    public function displayFromToDates ($from, $to, $d = 'j', $m = 'M' ){
+    public function displayFromToDates ($from, $to, $d = 'j', $m = 'M', $order = 'm-d' ){
 
         $fromDate = new DrupalDateTime( $from );
 
@@ -173,43 +174,82 @@ Rot13={map:null,convert:function(e){Rot13.init();var t="";for(i=0;i<e.length;i++
 
             // Return from date only if days are the same
             if ( $fromDate->format("Y-m-d") == $toDate->format("Y-m-d") ){
-                return '<span class="date">
-                            <span class="month">'.$fromDate->format($m).'</span>
-                            <span class="day">'.$fromDate->format($d).'</span>
-                        </span>';
+                if($order == 'm-d'){
+                    return '<span class="date">
+                                <span class="month">'.$fromDate->format($m).'</span>
+                                <span class="day">'.$fromDate->format($d).'</span>
+                            </span>';
+                }else{
+                    return '<span class="date">
+                                <span class="day">'.$fromDate->format($d).'</span>
+                                <span class="month">'.$fromDate->format($m).'</span>                           
+                            </span>';
+                }
             }else{
 
                 // If month are the same
                 if ( $fromDate->format("Y-m") == $toDate->format("Y-m") ){
+                    if($order == 'm-d'){
+                        return '<span class="date">
+                                    <span class="month">'.$fromDate->format($m).'</span>
+                                    <span class="day">'.$fromDate->format($d).'</span>
+                                    -
+                                    <span class="day">'.$toDate->format($d).'</span>
+                                </span>';
+                    }else{
+                        return '<span class="date">
+                                    <span class="day">'.$fromDate->format($d).'</span>
+                                    -
+                                    <span class="day">'.$toDate->format($d).'</span>
+                                    <span class="month">'.$fromDate->format($m).'</span>
+                                </span>';
+                    }
 
-                    return '<span class="date">
-                                <span class="month">'.$fromDate->format($m).'</span>
-                                <span class="day">'.$fromDate->format($d).'</span>
-                                -
-                                <span class="day">'.$toDate->format($d).'</span>
-                            </span>';
+
 
                 }else{
 
                     // If months are different
-                    return '<span class="date">
-                                <span class="month">'.$fromDate->format($m).'</span>
-                                <span class="day">'.$fromDate->format($d).'</span>
-                            </span>
-                            <span class="to">-</span>
-                            <span class="date">
-                                <span class="month">'.$toDate->format($m).'</span>
-                                <span class="day">'.$toDate->format($d).'</span>
-                            </span>';
+                    if($order == 'm-d'){
+                        return '<span class="date">
+                                    <span>
+                                        <span class="month">'.$fromDate->format($m).'</span>
+                                        <span class="day">'.$fromDate->format($d).'</span>
+                                    </span>                               
+                                    <span class="to">-</span>
+                                    <span>                                
+                                        <span class="month">'.$toDate->format($m).'</span>
+                                        <span class="day">'.$toDate->format($d).'</span>
+                                    </span>
+                                </span>';
+                    }else{
+                        return '<span class="date"> 
+                                    <span>
+                                        <span class="day">'.$fromDate->format($d).'</span>
+                                        <span class="month">'.$fromDate->format($m).'</span>
+                                    </span>                                
+                                    <span class="to">-</span>
+                                    <span>                                  
+                                        <span class="day">'.$toDate->format($d).'</span>
+                                        <span class="month">'.$toDate->format($m).'</span>
+                                    </span>
+                                </span>';
+                    }
                 }
             }
 
         }
-
-        return '<span class="date">
-                    <span class="month">'.$fromDate->format($m).'</span>
-                    <span class="day">'.$fromDate->format($d).'</span>
-                </span>';
+        if($order == 'm-d'){
+            return '<span class="date">
+                        <span class="month">'.$fromDate->format($m).'</span>
+                        <span class="day">'.$fromDate->format($d).'</span>
+                    </span>';
+        }else{
+            return '<span class="date">                        
+                        <span class="day">'.$fromDate->format($d).'</span>
+                        <span class="month">'.$fromDate->format($m).'</span>
+                    </span>';
+        }
 
     }
 
