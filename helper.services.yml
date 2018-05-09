@@ -18,6 +18,7 @@ services:
         arguments: ['@renderer']
     helper.render_helper:
         class: Drupal\helper\RenderHelper
+        arguments: ['@entity_type.manager']
     helper.node_helper:
         class: Drupal\helper\NodeHelper
         arguments: ['@entity_type.manager', '@entity_field.manager']

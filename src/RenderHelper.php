@@ -6,6 +6,7 @@
 namespace Drupal\helper;
 
 
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 
  
 /**
@@ -15,6 +16,16 @@ namespace Drupal\helper;
 class RenderHelper {
 
 
+    protected $entityTypeManager;
+
+
+    /**
+     * RenderHelper constructor.
+     * @param EntityTypeManagerInterface $entityTypeManager
+     */
+    public function __construct(EntityTypeManagerInterface $entityTypeManager) {
+        $this->entityTypeManager  = $entityTypeManager;
+    }
 
 
 	/**
@@ -46,6 +57,49 @@ class RenderHelper {
         ),
 
       ];
+
+
+    }
+
+
+    /** Get array of rendered entities
+     * @param $ids
+     * @param string $entity_type
+     * @param string $view_mode
+     * @return array
+     */
+    public function getRenderedEntities( $ids, $view_mode = 'teaser', $entity_type = 'node' ){
+
+        $render = array();
+        foreach($ids as $id){
+            $render[] = $this->renderEntity($id,$view_mode,$entity_type);
+        }
+        return $render;
+    }
+
+
+    /** Render entities
+     * @param $id
+     * @param string $entity_type
+     * @param string $view_mode
+     * @return array|bool
+     */
+    public function renderEntity ($id, $view_mode = 'teaser', $entity_type = 'node') {
+
+        // Get the storage object.
+        $entity_storage = $this->entityTypeManager->getStorage($entity_type);
+
+        // Get the view builder object
+        $view_builder = $this->entityTypeManager->getViewBuilder($entity_type);
+
+        // Load entity
+        $entity = $entity_storage->load($id);
+
+        if ( isset($entity) && $entity !== NULL ){
+            return $view_builder->view($entity, $view_mode);
+        }else{
+            return false;
+        }
 
 
     }
