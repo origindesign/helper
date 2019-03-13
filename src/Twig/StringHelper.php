@@ -52,6 +52,11 @@ class StringHelper extends \Twig_Extension {
                 array('is_safe' => array('html') )
             ),
             new \Twig_SimpleFunction(
+                'nidsToClasses',
+                array($this, 'nidsToClasses'),
+                array('is_safe' => array('html') )
+            ),
+            new \Twig_SimpleFunction(
                 'displayFromToDates',
                 array($this, 'displayFromToDates'),
                 array('is_safe' => array('html') )
@@ -318,6 +323,25 @@ Rot13={map:null,convert:function(e){Rot13.init();var t="";for(i=0;i<e.length;i++
 
         foreach ( $field_terms as $term){
             $classes[] = $this->machineFilter('term-'.$term["#plain_text"]);
+        }
+
+        return $classes;
+
+    }
+
+
+
+    /**
+     * Transform a Node Reference field into a string of classes
+     * @param $field_terms
+     * @return array
+     */
+    public function nidsToClasses ( $nids ){
+
+        $classes = array();
+
+        foreach ( $nids as $nid){
+            $classes[] = $this->machineFilter('nid-'.$nid['#plain_text']);
         }
 
         return $classes;
