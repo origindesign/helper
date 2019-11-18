@@ -89,6 +89,8 @@ class StringHelper extends \Twig_Extension {
     {
         return array(
             new \Twig_SimpleFilter('machine', array($this, 'machineFilter')),
+            new \Twig_SimpleFilter('cardinal', array($this, 'cardinalFilter')),
+            new \Twig_SimpleFilter('degree', array($this, 'degreeFilter')),
             new \Twig_SimpleFilter('obfuscate', array($this, 'obfuscateEmail')),
         );
     }
@@ -101,6 +103,53 @@ class StringHelper extends \Twig_Extension {
         $value = str_replace(' ','-', strtolower($value));
         $value = preg_replace('@[^a-z0-9-]+@','', $value);
         return $value;
+    }
+
+
+    /** Return carindal value from degree
+     * @param $string
+     * @return mixed|string
+     */
+    public function cardinalFilter($string){
+
+        $directions = array('N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW','N2');
+
+        $cardinal = $directions[round($string / 22.5)];
+
+        if($cardinal == 'N2'){
+            $cardinal='N';
+        }
+
+        return $cardinal;
+
+    }
+
+
+    /** Return degree value from caridnal
+     * @param $string
+     * @return float|int
+     */
+    public function degreeFilter($string){
+
+        if ($string == 'S')     return 0;
+        if ($string == 'SSW')   return 22.5;
+        if ($string == 'SW')    return 45;
+        if ($string == 'WSW')   return 67.5;
+        if ($string == 'W')     return 90;
+        if ($string == 'WNW')   return 112.5;
+        if ($string == 'NW')    return 135;
+        if ($string == 'NNW')   return 157.5;
+        if ($string == 'N')     return 180;
+        if ($string == 'NNE')   return 202.5;
+        if ($string == 'NE')    return 225;
+        if ($string == 'ENE')   return 247.5;
+        if ($string == 'E')     return 270;
+        if ($string == 'ESE')   return 292.5;
+        if ($string == 'SE')    return 315;
+        if ($string == 'SSE')   return 337.5;
+
+        return 0;
+
     }
 
 
