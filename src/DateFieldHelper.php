@@ -7,6 +7,7 @@ namespace Drupal\helper;
 
 use Drupal\Core\Render\Renderer;
 use Drupal\Core\Datetime\DrupalDateTime;
+use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
 
 
 /**
@@ -38,15 +39,15 @@ class DateFieldHelper {
             $date_field = ($node->{$fieldName}->getValue());
 
             $fromDate = new DrupalDateTime($date_field[0]['value']);
-            $fromDate->setTimezone(new \DateTimezone(DATETIME_STORAGE_TIMEZONE));
+            $fromDate->setTimezone(new \DateTimezone(DateTimeItemInterface::STORAGE_TIMEZONE));
 
-            $result['from'] = $fromDate->format(DATETIME_DATETIME_STORAGE_FORMAT);
+            $result['from'] = $fromDate->format(DateTimeItemInterface::DATETIME_STORAGE_FORMAT);
             $result['to'] = false;
 
             if ( isset($date_field[0]['end_value']) ){
                 $toDate = new DrupalDateTime($date_field[0]['end_value']);
-                $toDate->setTimezone(new \DateTimezone(DATETIME_STORAGE_TIMEZONE));
-                $result['to'] =  $toDate->format(DATETIME_DATETIME_STORAGE_FORMAT);
+                $toDate->setTimezone(new \DateTimezone(DateTimeItemInterface::STORAGE_TIMEZONE));
+                $result['to'] =  $toDate->format(DateTimeItemInterface::DATETIME_STORAGE_FORMAT);
             }
 
             return $result;
@@ -56,8 +57,6 @@ class DateFieldHelper {
         return false;
 
     }
-
-
 
 
 
