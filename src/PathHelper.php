@@ -66,7 +66,7 @@ class PathHelper {
   public function getNidByPath ($path) {
 
     // Check if Alias Path exists
-    $nodePath = $this->aliasManager->getAliasByPath($path, 'en');
+    $nodePath = $this->aliasManager->getPathByAlias($path, 'en');
 
     if ( $nodePath ){
       $arrPath = explode ("/",$nodePath);
@@ -94,10 +94,6 @@ class PathHelper {
     }
 
   }
-
-
-
-
 
 
 }

@@ -2,7 +2,7 @@ name: 'Helper'
 type: module
 description: 'A set of handy functions for Drupal development and theming'
 package: Custom
-version: '8.x-3.2'
+version: '8.x-3.3'
 core_version_requirement: ^8.8 || ^9
 dependencies:
   - drupal:path_alias
