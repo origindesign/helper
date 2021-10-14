@@ -35,18 +35,22 @@ class TaxoHelper {
   /**
    * Return taxonomy terms from a specific vocabulary
    */
-  public function getTaxoTerms ( $vid, $ignoreTids = NULL ) {
+  public function getTaxoTerms ( $vid, $ignoreTids = NULL, $loadEntities = false ) {
 
-    $terms = $this->entityTypeManager->getStorage('taxonomy_term')->loadTree($vid);
+    $terms = $this->entityTypeManager->getStorage('taxonomy_term')->loadTree($vid, 0, NULL, $loadEntities);
 
     if($ignoreTids){
 
       $termsSubset = array();
 
       foreach($terms as $term){
-        if(!in_array($term->tid,$ignoreTids)){
+
+        $tid = ($loadEntities ? $term->id() : $term->tid );
+
+        if(!in_array($tid,$ignoreTids)){
           array_push($termsSubset,$term);
         }
+
       }
 
       return $termsSubset;
