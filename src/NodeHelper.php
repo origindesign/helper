@@ -2,14 +2,15 @@
 /**
  * @file Contains \Drupal\helper\NodeHelper
  */
- 
+
 namespace Drupal\helper;
 
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\EntityFieldManager;
+use Drupal\Core\File\FileUrlGeneratorInterface;
 
- 
+
 /**
  * A Class for helping in rendering elements in templates
  *
@@ -17,66 +18,68 @@ use Drupal\Core\Entity\EntityFieldManager;
 class NodeHelper {
 
 
-    protected $entityTypeManager;
-    protected $entityFieldManager;
+  protected $entityTypeManager;
+  protected $entityFieldManager;
+  protected $fileUrlGeneratorInterface;
 
 
-    /**
-     * EfqQueryEntities constructor.
-     * @param EntityTypeManagerInterface $entityTypeManager
-     * @param EntityFieldManager $entityFieldManager
-     */
-    public function __construct(EntityTypeManagerInterface $entityTypeManager, EntityFieldManager $entityFieldManager) {
-        $this->entityTypeManager  = $entityTypeManager;
-        $this->entityFieldManager  = $entityFieldManager;
-    }
-
-    
-    /**
-     * Return node variables from a specific node ID ti be used in hook page template
-     */
-    public function getNodeFields ( $nid, $node_type ) {
-
-        // Get the node storage object.
-        $node_storage = $this->entityTypeManager->getStorage('node');
-
-        // Get the view builder object
-        $view_builder = $this->entityTypeManager->getViewBuilder('node');
-
-        // We use the load function to load a single node object.
-        $node = $node_storage->load($nid);
-        $fields_def = $this->entityFieldManager->getFieldDefinitions('node', $node_type);
-
-        $fields = [];
-
-        foreach ($fields_def as $field_name => $field_definition) {
+  /**
+   * EfqQueryEntities constructor.
+   * @param EntityTypeManagerInterface $entityTypeManager
+   * @param EntityFieldManager $entityFieldManager
+   */
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, EntityFieldManager $entityFieldManager, FileUrlGeneratorInterface $fileUrlGeneratorInterface) {
+    $this->entityTypeManager  = $entityTypeManager;
+    $this->entityFieldManager  = $entityFieldManager;
+    $this->fileUrlGeneratorInterface  = $fileUrlGeneratorInterface;
+  }
 
 
-            // Get Only Custom Fields
-            if (!empty($field_definition->getTargetBundle())) {
+  /**
+   * Return node variables from a specific node ID ti be used in hook page template
+   */
+  public function getNodeFields ( $nid, $node_type ) {
 
-                $field = $node->get($field_name);
-                $format = $field->format;
+    // Get the node storage object.
+    $node_storage = $this->entityTypeManager->getStorage('node');
 
-                // Format Field only if get format or if it's a link or file
-                if (!is_null($format) || $field_definition->getType() == "link" || $field_definition->getType() == "file" ) {
+    // Get the view builder object
+    $view_builder = $this->entityTypeManager->getViewBuilder('node');
 
-                    $fields[$field_name] = $view_builder->viewField($field, array('label' => 'hidden'));
+    // We use the load function to load a single node object.
+    $node = $node_storage->load($nid);
+    $fields_def = $this->entityFieldManager->getFieldDefinitions('node', $node_type);
 
-                    // Otherwise, return raw value
-                } else {
+    $fields = [];
 
-                    $fields[$field_name] = $field->value;
+    foreach ($fields_def as $field_name => $field_definition) {
 
-                }
 
-            }
+      // Get Only Custom Fields
+      if (!empty($field_definition->getTargetBundle())) {
+
+        $field = $node->get($field_name);
+        $format = $field->format;
+
+        // Format Field only if get format or if it's a link or file
+        if (!is_null($format) || $field_definition->getType() == "link" || $field_definition->getType() == "file" ) {
+
+          $fields[$field_name] = $view_builder->viewField($field, array('label' => 'hidden'));
+
+          // Otherwise, return raw value
+        } else {
+
+          $fields[$field_name] = $field->value;
 
         }
 
-        return $fields;
+      }
 
     }
+
+    return $fields;
+
+  }
 
 
   /**
@@ -102,7 +105,7 @@ class NodeHelper {
       $file = $file_storage->load($fid);
 
       // Return URL
-      return file_create_url($file->getFileUri());
+      return $this->fileUrlGeneratorInterface->generate($file->getFileUri());
 
     }
 

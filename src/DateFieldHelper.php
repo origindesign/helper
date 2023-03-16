@@ -17,46 +17,46 @@ use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
 class DateFieldHelper {
 
 
-    protected $rendererService;
+  protected $rendererService;
 
 
-    /**
-     * Class constructor.
-     * @param Renderer $rendererService
-     */
-    public function __construct( Renderer $rendererService) {
-        $this->rendererService = $rendererService;
+  /**
+   * Class constructor.
+   * @param Renderer $rendererService
+   */
+  public function __construct( Renderer $rendererService) {
+    $this->rendererService = $rendererService;
 
-    }
+  }
 
 
-    public function getRawDates ($node, $fieldName){
+  public function getRawDates ($node, $fieldName){
 
-        if ( isset($node->{$fieldName}) ){
+    if ( isset($node->{$fieldName}) ){
 
-            $result = array();
+      $result = array();
 
-            $date_field = ($node->{$fieldName}->getValue());
+      $date_field = ($node->{$fieldName}->getValue());
 
-            $fromDate = new DrupalDateTime($date_field[0]['value']);
-            $fromDate->setTimezone(new \DateTimezone(DateTimeItemInterface::STORAGE_TIMEZONE));
+      $fromDate = new DrupalDateTime($date_field[0]['value']);
+      $fromDate->setTimezone(new \DateTimezone(DateTimeItemInterface::STORAGE_TIMEZONE));
 
-            $result['from'] = $fromDate->format(DateTimeItemInterface::DATETIME_STORAGE_FORMAT);
-            $result['to'] = false;
+      $result['from'] = $fromDate->format(DateTimeItemInterface::DATETIME_STORAGE_FORMAT);
+      $result['to'] = false;
 
-            if ( isset($date_field[0]['end_value']) ){
-                $toDate = new DrupalDateTime($date_field[0]['end_value']);
-                $toDate->setTimezone(new \DateTimezone(DateTimeItemInterface::STORAGE_TIMEZONE));
-                $result['to'] =  $toDate->format(DateTimeItemInterface::DATETIME_STORAGE_FORMAT);
-            }
+      if ( isset($date_field[0]['end_value']) ){
+        $toDate = new DrupalDateTime($date_field[0]['end_value']);
+        $toDate->setTimezone(new \DateTimezone(DateTimeItemInterface::STORAGE_TIMEZONE));
+        $result['to'] =  $toDate->format(DateTimeItemInterface::DATETIME_STORAGE_FORMAT);
+      }
 
-            return $result;
-
-        }
-
-        return false;
+      return $result;
 
     }
+
+    return false;
+
+  }
 
 
 
