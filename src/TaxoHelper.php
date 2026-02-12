@@ -7,14 +7,15 @@ namespace Drupal\helper;
 
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\path_alias\AliasManager;
+use Drupal\path_alias\AliasManagerInterface;
 
 
 /**
  * A Class for helping in rendering elements in templates
  *
  */
-class TaxoHelper {
+class TaxoHelper
+{
 
 
   protected $entityTypeManager;
@@ -24,10 +25,11 @@ class TaxoHelper {
   /**
    * TaxoHelper constructor.
    * @param EntityTypeManagerInterface $entityTypeManager
-   * @param AliasManager $aliasManager
+   * @param \Drupal\path_alias\AliasManagerInterface $aliasManager
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager, AliasManager $aliasManager) {
-    $this->entityTypeManager  = $entityTypeManager;
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, AliasManagerInterface $aliasManager)
+  {
+    $this->entityTypeManager = $entityTypeManager;
     $this->aliasManager = $aliasManager;
   }
 
@@ -35,20 +37,21 @@ class TaxoHelper {
   /**
    * Return taxonomy terms from a specific vocabulary
    */
-  public function getTaxoTerms ( $vid, $ignoreTids = NULL, $loadEntities = false ) {
+  public function getTaxoTerms($vid, $ignoreTids = NULL, $loadEntities = false)
+  {
 
     $terms = $this->entityTypeManager->getStorage('taxonomy_term')->loadTree($vid, 0, NULL, $loadEntities);
 
-    if($ignoreTids){
+    if ($ignoreTids) {
 
       $termsSubset = array();
 
-      foreach($terms as $term){
+      foreach ($terms as $term) {
 
-        $tid = ($loadEntities ? $term->id() : $term->tid );
+        $tid = ($loadEntities ? $term->id() : $term->tid);
 
-        if(!in_array($tid,$ignoreTids)){
-          array_push($termsSubset,$term);
+        if (!in_array($tid, $ignoreTids)) {
+          array_push($termsSubset, $term);
         }
 
       }
@@ -62,11 +65,11 @@ class TaxoHelper {
   }
 
 
-
   /**
    * Return label of a taxonomy term
    */
-  public function getTaxoName ( $tid ) {
+  public function getTaxoName($tid)
+  {
 
     $term = $this->entityTypeManager->getStorage('taxonomy_term')->load($tid);
 
@@ -75,19 +78,17 @@ class TaxoHelper {
   }
 
 
-
   /**
    * Return path alias of a taxonomy term
    */
-  public function getTaxoPathAlias ( $tid ) {
+  public function getTaxoPathAlias($tid)
+  {
 
-    $alias = $this->aliasManager->getAliasByPath('/taxonomy/term/'.$tid);
+    $alias = $this->aliasManager->getAliasByPath('/taxonomy/term/' . $tid);
 
     return $alias;
 
   }
-
-
 
 
 }
